@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FootballTeamRepository")
@@ -15,22 +18,29 @@ class FootballTeam
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Name;
+    public $Name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=TRUE)
      */
-    private $Strip;
+    public $Strip;
 
     /**
      * @ORM\Column(type="integer")
      */
     private $league_id;
+
+    /**
+     * @var FootballLeague
+     * @ManyToOne(targetEntity="App\Entity\FootballLeague", inversedBy="football_teams")
+     * @JoinColumn(name="football_league_id", referencedColumnName="id")
+     */
+    protected $group;
 
     public function getId()
     {

@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FootballLeagueRepository")
@@ -15,12 +18,18 @@ class FootballLeague
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    public $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    public $name;
+
+    /**
+     * @var Collection
+     * @OneToMany(targetEntity="FootballTeam")
+     */
+    protected $teams;
 
     public function getId()
     {
@@ -37,5 +46,12 @@ class FootballLeague
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getTeams() {
+        return $this->teams;
     }
 }
