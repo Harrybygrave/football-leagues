@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,19 +22,14 @@ class FootballTeam
     private $Name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $Stip;
+    private $Strip;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\FootballLeague", mappedBy="football_team_id")
+     * @ORM\ManyToOne(targetEntity="App\Entity\FootballLeague", inversedBy="footballTeams")
      */
-    private $relation;
-
-    public function __construct()
-    {
-        $this->relation = new ArrayCollection();
-    }
+    private $league;
 
     public function getId()
     {
@@ -55,45 +48,26 @@ class FootballTeam
         return $this;
     }
 
-    public function getStip(): ?string
+    public function getStrip(): ?string
     {
-        return $this->Stip;
+        return $this->Strip;
     }
 
-    public function setStip(string $Stip): self
+    public function setStrip(?string $Strip): self
     {
-        $this->Stip = $Stip;
+        $this->Strip = $Strip;
 
         return $this;
     }
 
-    /**
-     * @return Collection|FootballLeague[]
-     */
-    public function getRelation(): Collection
+    public function getLeague(): ?FootballLeague
     {
-        return $this->relation;
+        return $this->league;
     }
 
-    public function addRelation(FootballLeague $relation): self
+    public function setLeague(?FootballLeague $league): self
     {
-        if (!$this->relation->contains($relation)) {
-            $this->relation[] = $relation;
-            $relation->setFootballTeamId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRelation(FootballLeague $relation): self
-    {
-        if ($this->relation->contains($relation)) {
-            $this->relation->removeElement($relation);
-            // set the owning side to null (unless already changed)
-            if ($relation->getFootballTeamId() === $this) {
-                $relation->setFootballTeamId(null);
-            }
-        }
+        $this->league = $league;
 
         return $this;
     }

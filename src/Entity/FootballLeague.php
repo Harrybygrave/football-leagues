@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,13 +21,17 @@ class FootballLeague
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $Name;
+    private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FootballTeam", inversedBy="relation")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToMany(targetEntity="App\Entity\FootballTeam", mappedBy="league")
      */
-    private $football_team_id;
+    private $footballTeams;
+
+    public function __construct()
+    {
+        $this->footballTeams = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -34,24 +40,43 @@ class FootballLeague
 
     public function getName(): ?string
     {
-        return $this->Name;
+        return $this->name;
     }
 
-    public function setName(string $Name): self
+    public function setName(string $name): self
     {
-        $this->Name = $Name;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getFootballTeamId(): ?FootballTeam
+    /**
+     * @return Collection|FootballTeam[]
+     */
+    public function getFootballTeams(): Collection
     {
-        return $this->football_team_id;
+        return $this->footballTeams;
     }
 
-    public function setFootballTeamId(?FootballTeam $football_team_id): self
+    public function addFootballTeam(FootballTeam $footballTeam): self
     {
-        $this->football_team_id = $football_team_id;
+        if (!$this->footballTeams->contains($footballTeam)) {
+            $this->footballTeams[] = $footballTeam;
+            $footballTeam->setLeague($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFootballTeam(FootballTeam $footballTeam): self
+    {
+        if ($this->footballTeams->contains($footballTeam)) {
+            $this->footballTeams->removeElement($footballTeam);
+            // set the owning side to null (unless already changed)
+            if ($footballTeam->getLeague() === $this) {
+                $footballTeam->setLeague(null);
+            }
+        }
 
         return $this;
     }
